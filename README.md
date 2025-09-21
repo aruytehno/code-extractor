@@ -6,6 +6,12 @@ Furthermore, automatic splitting into parts allows for large projects to be tran
 
 Each part contains clear labeling of its sequence number and the total number of fragments, ensuring the project structure's integrity is perceived even when transferred separately.
 
+###### Installation
+```bash
+# Install dependencies
+pip install -r requirements.txt
+```
+
 ###### Configuration
 ```bash
 # Create an isolated config file
