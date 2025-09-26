@@ -33,7 +33,21 @@ def write_directory_structure(root_dir: str, exclude_dirs: Set[str]) -> List[str
                 total_files += 1
                 total_size += size_bytes
                 connector = "└──" if i == len(files) - 1 and not dirs else "├──"
-                all_content_lines.append(f"{indent}    {connector} {file} ({file_size})")
+
+                # Определяем, будет ли отображаться содержимое файла
+                content_status = ""
+                if not is_sensitive_file(file_path) and not should_hide_content(file_path):
+                    file_size_bytes = os.path.getsize(file_path)
+                    if file_size_bytes <= config.MAX_FILE_SIZE:
+                        try:
+                            # Проверяем, можно ли прочитать файл как текст
+                            with open(file_path, "r", encoding=config.ENCODING, errors="strict") as f:
+                                f.read(1)  # Пробуем прочитать один символ
+                            content_status = " [CONTENT DISPLAYED]"
+                        except (UnicodeDecodeError, IOError):
+                            content_status = " [BINARY FILE]"
+
+                all_content_lines.append(f"{indent}    {connector} {file} ({file_size}){content_status}")
                 included_files.append(file_path)
 
     total_size_readable = format_size(total_size)
